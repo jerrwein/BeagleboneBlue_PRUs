@@ -12,7 +12,7 @@
 #define PRU_NUM0 0
 #define PRU_NUM1 1
 
-#define PATH_PRU_BINS "/home/jerry/Projs/PRUs_C_Makefiles/DualPru_DecodeSpektrumRCOutput_Service_2"
+#define PATH_PRU_BINS "./"
 
 extern volatile unsigned int   *gpio0_setdataout_addr;
 extern volatile unsigned int   *gpio1_setdataout_addr;
@@ -83,6 +83,8 @@ int main (int ac, char** av)
 
 	/* Setup the GPIO pins */
 	/* Red User LED */
+	printf ("Exporting GPIO pins...\n");
+
 	int	gpio_num = 66;
 	gpio_export (gpio_num);
 	gpio_set_dir (gpio_num, GPIO_OUTPUT);
@@ -117,9 +119,11 @@ int main (int ac, char** av)
 	gpio_export (gpio_num);
 	gpio_set_dir (gpio_num, GPIO_INPUT);
 
+	printf ("Cycling LEDs...\n");
 	Cycle_LEDS();
 
 	/* Initialize the PRUs */
+	printf ("Initialising PRUs...\n");
 	/* If this segfaults, make sure you're executing as root. */
 	ret = prussdrv_init();
 	if (0 != ret)
@@ -178,7 +182,7 @@ int main (int ac, char** av)
 	}
 
 	/* Wait for PRUs */
-	printf ("\tINFO: Pausing for Ctl-C signal.\r\n");
+	printf ("\n\tINFO: Pausing for Ctl-C signal.\r\n");
 
 	while (!is_sigint && !is_sigterm)
 	{
@@ -271,6 +275,8 @@ int main (int ac, char** av)
 	}
 
 	/* Release GPIO exports */
+	printf ("\nReleasing GPIO exports...\n");
+
 	gpio_num = 66;
 	gpio_unexport (gpio_num);
 	gpio_num = 67;
@@ -287,6 +293,8 @@ int main (int ac, char** av)
 
 	gpio_num = 30;
 	gpio_unexport (gpio_num);
+
+	printf ("Done.\n");
 
 	return 0;
 }

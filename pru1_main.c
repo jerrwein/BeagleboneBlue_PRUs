@@ -83,39 +83,41 @@ static void pwm_setup(void)
 
 static void bubble_sort_with_index (uint8_t sorted_indexes[])
 {
-    uint8_t     i, j;
-    uint32_t    temp_val;
-    uint8_t     temp_index;
+	uint8_t     i, j;
+	uint32_t    temp_val;
+	uint8_t     temp_index;
 
 	/* Populate the sorted array with the unsorted data */
-    for (i=0; i<MAX_CHS; i++)
+	for (i=0; i<MAX_CHS; i++)
 	{
 		pwm_pulse_width_sorted[i] = pwm_pulse_width[i];
-        sorted_indexes[i] = i;
+		sorted_indexes[i] = i;
+/*		Offset for SVO1-8 PRU bit offset of 4  */
+/*		sorted_indexes[i] = i + 4; */
 	}
 
-    for (i=0; i<MAX_CHS; i++)
-    {
-        for (j=i; j<MAX_CHS; j++)
-        {
+	for (i=0; i<MAX_CHS; i++)
+	{
+		for (j=i; j<MAX_CHS; j++)
+		{
 			/* Sort all values from smallest to largest */
-            if (pwm_pulse_width_sorted[j] < pwm_pulse_width_sorted[i])
-            {
-                temp_val = pwm_pulse_width_sorted[i];
-                temp_index = sorted_indexes[i];
-                pwm_pulse_width_sorted[i] = pwm_pulse_width_sorted[j];
-                pwm_pulse_width_sorted[j] = temp_val;
-                sorted_indexes[i] = sorted_indexes[j];
-                sorted_indexes[j] = temp_index;
-            }
-        }
-    }
+			if (pwm_pulse_width_sorted[j] < pwm_pulse_width_sorted[i])
+			{
+				temp_val = pwm_pulse_width_sorted[i];
+				temp_index = sorted_indexes[i];
+				pwm_pulse_width_sorted[i] = pwm_pulse_width_sorted[j];
+				pwm_pulse_width_sorted[j] = temp_val;
+				sorted_indexes[i] = sorted_indexes[j];
+				sorted_indexes[j] = temp_index;
+			}
+      		}
+	}
 	/* Debug - place values in DPRAM */
 #if 0
-    for (i=0; i<MAX_CHS; i++)
+	for (i=0; i<MAX_CHS; i++)
 	{
-	    PWM_CMD->periodhi[8+i][0] = 0;
-    	PWM_CMD->periodhi[8+i][1] = sorted_indexes[i];
+		PWM_CMD->periodhi[8+i][0] = 0;
+		PWM_CMD->periodhi[8+i][1] = sorted_indexes[i];
 	}
 #endif
 }
@@ -187,7 +189,9 @@ int main(int argc, char *argv[])
 			if (pwm_enabled[sorted_indexes[i]])
 			{
 				cnt_ready = next_on_cnt[i];
-				reg_bit_mask = (1U << (sorted_indexes[i]));
+/*				reg_bit_mask = (17U << (sorted_indexes[i])); */
+				/* Offset of 4 for SVO1-8 PRU bit offset */
+				reg_bit_mask = (1U << (sorted_indexes[i]+4));
 				while ((read_PIEP_COUNT() - cnt_ready) & 0x80000000);
 				__R30 |= reg_bit_mask;
 			}
@@ -198,7 +202,9 @@ int main(int argc, char *argv[])
 		{
 			if (pwm_enabled[sorted_indexes[i]])
 			{
-				reg_bit_mask = ~(1U << (sorted_indexes[i]));
+/*				reg_bit_mask = ~(17U << (sorted_indexes[i])); */
+				/* Offset of 4 for SVO1-8 PRU bit offset */
+				reg_bit_mask = ~(1U << (sorted_indexes[i])+4);
 				cnt_ready = next_off_cnt[i];
 				while ((read_PIEP_COUNT() - cnt_ready) & 0x80000000);
 				__R30 &= reg_bit_mask;

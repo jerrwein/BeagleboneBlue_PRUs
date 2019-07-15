@@ -305,7 +305,7 @@ int gpio_set_dir (unsigned int gpio, unsigned int out_flag)
 
         snprintf (buf, sizeof(buf), SYSFS_GPIO_DIR  "/gpio%d/direction", gpio);
 
-	printf("xxx-yyy: %s\n", buf);
+//	printf("xxx-yyy: %s\n", buf);
 
         fd = open (buf, O_WRONLY);
         if (fd < 0) {
