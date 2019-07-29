@@ -149,7 +149,7 @@ int main (int ac, char** av)
 	}
 
 	/* Write program data from data.bin to pru-0 */
-	ret = prussdrv_load_datafile (PRU_NUM0, PATH_PRU_BINS"/pru0_data.bin");
+	ret = prussdrv_load_datafile (PRU_NUM0, PATH_PRU_BINS"pru0_data.bin");
 	if (ret < 0)
 	{
 		printf ("prussdrv_load_datafile(PRU-0) failed\n");
@@ -157,7 +157,7 @@ int main (int ac, char** av)
 	}
 
 	/* Write program data from data.bin to pru-1 */
-	ret = prussdrv_load_datafile (PRU_NUM1, PATH_PRU_BINS"/pru1_data.bin");
+	ret = prussdrv_load_datafile (PRU_NUM1, PATH_PRU_BINS"pru1_data.bin");
 	if (ret < 0)
 	{
 		printf ("prussdrv_load_datafile(PRU-1) failed\n");
@@ -166,7 +166,7 @@ int main (int ac, char** av)
 	}
 
 	/* Load/Execute code on pru-0 */
-	prussdrv_exec_program_at (PRU_NUM0, PATH_PRU_BINS"/pru0_text.bin", PRU0_START_ADDR);
+	prussdrv_exec_program_at (PRU_NUM0, PATH_PRU_BINS"pru0_text.bin", PRU0_START_ADDR);
 	if (ret < 0)
 	{
 		printf ("prussdrv_exec_program_at(PRU-0) failed\n");
@@ -174,7 +174,7 @@ int main (int ac, char** av)
 	}
 
 	/* Load/Execute code on pru-1 */
-	prussdrv_exec_program_at (PRU_NUM1, PATH_PRU_BINS"/pru1_text.bin", PRU1_START_ADDR);
+	prussdrv_exec_program_at (PRU_NUM1, PATH_PRU_BINS"pru1_text.bin", PRU1_START_ADDR);
 	if (ret < 0)
 	{
 		printf ("prussdrv_exec_program_at(PRU-1) failed\n");
